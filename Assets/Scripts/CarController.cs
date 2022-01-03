@@ -4,38 +4,95 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-    public GameObject wheelFrontLeft;
-    public GameObject wheelFrontRight;
+	private float horizontalInput;
+	private float verticalInput;
 
-    // Start is called before the first frame update
-    void Start()
+	public WheelCollider frontLeftWheelCollider, frontRightWheelCollider;
+	public WheelCollider backLeftWheelCollider, backRightWheelCollider;
+	public Transform frontLeftTransform, frontRightTransform;
+	public Transform backLeftTransform, backRightTransform;
+
+	public Transform rollTransform;
+
+	private float maxSteerAngle = 45;
+	private float motorForce = 300f;
+	private float brakeForce = 600f;
+
+	private float motorAccelerationForce = 1f;
+	private bool isBraking = false;
+
+	private void Steer()
+	{
+		float steeringAngle = maxSteerAngle * horizontalInput * 0.5f;
+		frontLeftWheelCollider.steerAngle = steeringAngle;
+		frontRightWheelCollider.steerAngle = steeringAngle;
+	}
+
+	private void UpdateWheelPoses()
+	{
+		UpdateWheelPose(frontLeftWheelCollider, frontLeftTransform);
+		UpdateWheelPose(frontRightWheelCollider, frontRightTransform);
+		UpdateWheelPose(backLeftWheelCollider, backLeftTransform);
+		UpdateWheelPose(backRightWheelCollider, backRightTransform);
+	}
+
+	private void UpdateRollPose(WheelCollider collider)
     {
-    }
+		rollTransform.localRotation = new Quaternion(0, 0, collider.steerAngle / -maxSteerAngle, 1);
+	}
 
-    // Update is called once per frame
-    void Update()
+	//Update car wheel position and rotation based on collider
+	private void UpdateWheelPose(WheelCollider collider, Transform transform)
+	{
+		Vector3 pos;
+		Quaternion quat;
+
+		collider.GetWorldPose(out pos, out quat);
+
+		transform.position = pos;
+		transform.rotation = quat;
+	}
+
+	private void HandleMotor()
     {
-        if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-        {
-            wheelFrontLeft.transform.rotation = new Quaternion(0, 180, 0, 0);
-            wheelFrontRight.transform.rotation = new Quaternion(0, 0, 0, 0);
-        } else
-        {
-            var horizontalInput = Input.GetAxis("Horizontal");
+		isBraking = Input.GetKey(KeyCode.Space);
+		float currBrakeForce = isBraking ? brakeForce : 0f;
 
-            wheelFrontLeft.transform.Rotate(Vector3.up * horizontalInput * Time.deltaTime * 15f);
-            wheelFrontRight.transform.Rotate(Vector3.up * horizontalInput * Time.deltaTime * 15f);
+		frontLeftWheelCollider.brakeTorque = currBrakeForce;
+		frontRightWheelCollider.brakeTorque = currBrakeForce;
+		if(isBraking)
+        {
+			return;
         }
 
-        var verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.forward * verticalInput * Time.deltaTime * 5f);
+		frontLeftWheelCollider.motorTorque = verticalInput * motorForce * motorAccelerationForce;
+		frontRightWheelCollider.motorTorque = verticalInput * motorForce * motorAccelerationForce;
+	}
 
-        //make car turns based on wheel rotation
-        var wheelRotation = wheelFrontLeft.transform.rotation.eulerAngles;
-        wheelRotation.y -= 180;
-        transform.Rotate(wheelRotation * verticalInput * Time.deltaTime * 5f);
+	private void FixedUpdate()
+	{
+		//Get input
+		horizontalInput = Input.GetAxis("Horizontal");
+		verticalInput = Input.GetAxis("Vertical");
 
-        Debug.Log(wheelRotation);
-    }
+		Steer();
+
+		HandleMotor();
+		
+		UpdateWheelPoses();
+
+		UpdateRollPose(frontLeftWheelCollider);
+
+		if (isBraking)
+        {
+			motorAccelerationForce = 1f;
+        }
+
+		//Increase acceleration overtime
+		if (motorAccelerationForce < 2)
+		{
+			motorAccelerationForce += 0.1f;
+		}
+	}
 
 }
