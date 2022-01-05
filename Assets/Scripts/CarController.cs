@@ -21,7 +21,14 @@ public class CarController : MonoBehaviour
 	private float motorAccelerationForce = 1f;
 	private bool isBraking = false;
 
-	private void Steer()
+	private GameManager gameManager;
+
+    private void Start()
+    {
+		gameManager = FindObjectOfType<GameManager>();
+    }
+
+    private void Steer()
 	{
 		float steeringAngle = maxSteerAngle * horizontalInput * 0.5f;
 		frontLeftWheelCollider.steerAngle = steeringAngle;
@@ -60,6 +67,9 @@ public class CarController : MonoBehaviour
 
 		frontLeftWheelCollider.brakeTorque = currBrakeForce;
 		frontRightWheelCollider.brakeTorque = currBrakeForce;
+		//Notify game manager to update brake UI
+		gameManager.SetBraking(isBraking);
+
 		if(isBraking)
         {
 			return;

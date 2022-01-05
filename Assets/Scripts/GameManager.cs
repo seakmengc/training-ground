@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 
     public Image[] hearts;
 
+    public GameObject brakeUi;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +29,17 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         levelUi.SetText("Level: " + level.ToString());
+    }
+
+    public void SetBraking(bool isBraking)
+    {
+        if(isBraking)
+        {
+            brakeUi.gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+        } else
+        {
+            brakeUi.gameObject.transform.localScale = new Vector3(1, 1, 1);
+        }
     }
 
     public void ReduceOneLive()
