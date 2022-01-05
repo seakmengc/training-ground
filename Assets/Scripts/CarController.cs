@@ -39,7 +39,7 @@ public class CarController : MonoBehaviour
 	private void UpdateRollPose(WheelCollider collider)
     {
 		rollTransform.localRotation = new Quaternion(0, 0, collider.steerAngle / -maxSteerAngle, 1);
-	}
+    }
 
 	//Update car wheel position and rotation based on collider
 	private void UpdateWheelPose(WheelCollider collider, Transform transform)
