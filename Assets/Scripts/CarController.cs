@@ -14,7 +14,7 @@ public class CarController : MonoBehaviour
 
 	public Transform rollTransform;
 
-	private float maxSteerAngle = 45;
+	private float maxSteerAngle = 60;
 	private float motorForce = 300f;
 	private float brakeForce = 600f;
 
@@ -28,7 +28,33 @@ public class CarController : MonoBehaviour
 		gameManager = FindObjectOfType<GameManager>();
     }
 
-    private void Steer()
+    private void FixedUpdate()
+	{
+		//Get input
+		horizontalInput = Input.GetAxis("Horizontal");
+		verticalInput = Input.GetAxis("Vertical");
+
+		Steer();
+
+		HandleMotor();
+
+		UpdateWheelPoses();
+
+		UpdateRollPose(frontLeftWheelCollider);
+
+		if (isBraking)
+		{
+			motorAccelerationForce = 1f;
+		}
+
+		//Increase acceleration overtime
+		if (motorAccelerationForce < 2)
+		{
+			motorAccelerationForce += 0.1f;
+		}
+	}
+
+	private void Steer()
 	{
 		float steeringAngle = maxSteerAngle * horizontalInput * 0.5f;
 		frontLeftWheelCollider.steerAngle = steeringAngle;
@@ -38,10 +64,10 @@ public class CarController : MonoBehaviour
 	private void UpdateWheelPoses()
 	{
 		UpdateWheelPose(frontLeftWheelCollider, frontLeftTransform);
-		UpdateWheelPose(frontRightWheelCollider, frontRightTransform);
+		UpdateWheelPose(frontRightWheelCollider, frontRightTransform, 0f);
 		UpdateWheelPose(backLeftWheelCollider, backLeftTransform);
-		UpdateWheelPose(backRightWheelCollider, backRightTransform);
-	}
+		UpdateWheelPose(backRightWheelCollider, backRightTransform, 0f);
+    }
 
 	private void UpdateRollPose(WheelCollider collider)
     {
@@ -49,12 +75,13 @@ public class CarController : MonoBehaviour
     }
 
 	//Update car wheel position and rotation based on collider
-	private void UpdateWheelPose(WheelCollider collider, Transform transform)
+	private void UpdateWheelPose(WheelCollider collider, Transform transform, float yRotation = 180f)
 	{
 		Vector3 pos;
 		Quaternion quat;
 
 		collider.GetWorldPose(out pos, out quat);
+		quat *= Quaternion.Euler(0, yRotation, 0);
 
 		transform.position = pos;
 		transform.rotation = quat;
@@ -77,32 +104,6 @@ public class CarController : MonoBehaviour
 
 		frontLeftWheelCollider.motorTorque = verticalInput * motorForce * motorAccelerationForce;
 		frontRightWheelCollider.motorTorque = verticalInput * motorForce * motorAccelerationForce;
-	}
-
-	private void FixedUpdate()
-	{
-		//Get input
-		horizontalInput = Input.GetAxis("Horizontal");
-		verticalInput = Input.GetAxis("Vertical");
-
-		Steer();
-
-		HandleMotor();
-		
-		UpdateWheelPoses();
-
-		UpdateRollPose(frontLeftWheelCollider);
-
-		if (isBraking)
-        {
-			motorAccelerationForce = 1f;
-        }
-
-		//Increase acceleration overtime
-		if (motorAccelerationForce < 2)
-		{
-			motorAccelerationForce += 0.1f;
-		}
 	}
 
 }
