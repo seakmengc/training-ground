@@ -28,7 +28,33 @@ public class CarController : MonoBehaviour
 		gameManager = FindObjectOfType<GameManager>();
     }
 
-    private void Steer()
+    private void FixedUpdate()
+	{
+		//Get input
+		horizontalInput = Input.GetAxis("Horizontal");
+		verticalInput = Input.GetAxis("Vertical");
+
+		Steer();
+
+		HandleMotor();
+
+		UpdateWheelPoses();
+
+		UpdateRollPose(frontLeftWheelCollider);
+
+		if (isBraking)
+		{
+			motorAccelerationForce = 1f;
+		}
+
+		//Increase acceleration overtime
+		if (motorAccelerationForce < 2)
+		{
+			motorAccelerationForce += 0.1f;
+		}
+	}
+
+	private void Steer()
 	{
 		float steeringAngle = maxSteerAngle * horizontalInput * 0.5f;
 		frontLeftWheelCollider.steerAngle = steeringAngle;
@@ -77,32 +103,6 @@ public class CarController : MonoBehaviour
 
 		frontLeftWheelCollider.motorTorque = verticalInput * motorForce * motorAccelerationForce;
 		frontRightWheelCollider.motorTorque = verticalInput * motorForce * motorAccelerationForce;
-	}
-
-	private void FixedUpdate()
-	{
-		//Get input
-		horizontalInput = Input.GetAxis("Horizontal");
-		verticalInput = Input.GetAxis("Vertical");
-
-		Steer();
-
-		HandleMotor();
-		
-		UpdateWheelPoses();
-
-		UpdateRollPose(frontLeftWheelCollider);
-
-		if (isBraking)
-        {
-			motorAccelerationForce = 1f;
-        }
-
-		//Increase acceleration overtime
-		if (motorAccelerationForce < 2)
-		{
-			motorAccelerationForce += 0.1f;
-		}
 	}
 
 }

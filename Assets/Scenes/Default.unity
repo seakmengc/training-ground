@@ -45348,6 +45348,7 @@ GameObject:
   - component: {fileID: 2070960850}
   - component: {fileID: 2070960848}
   - component: {fileID: 2070960847}
+  - component: {fileID: 2070960849}
   m_Layer: 0
   m_Name: In Car Camera
   m_TagString: MainCamera
@@ -45371,6 +45372,18 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2070960846}
   m_Enabled: 1
+--- !u!114 &2070960849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070960846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6e6c06834021ba4eb7a31b82d5db5a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!20 &2070960850
 Camera:
   m_ObjectHideFlags: 0
