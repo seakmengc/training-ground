@@ -48,15 +48,15 @@ public class CarController : MonoBehaviour
 		}
 
 		//Increase acceleration overtime
-		if (motorAccelerationForce < 2)
+		if (motorAccelerationForce < 5)
 		{
-			motorAccelerationForce += 0.1f;
+			motorAccelerationForce += 0.25f;
 		}
 	}
 
 	private void Steer()
 	{
-		float steeringAngle = maxSteerAngle * horizontalInput * 0.5f;
+		float steeringAngle = maxSteerAngle * horizontalInput;
 		frontLeftWheelCollider.steerAngle = steeringAngle;
 		frontRightWheelCollider.steerAngle = steeringAngle;
 	}

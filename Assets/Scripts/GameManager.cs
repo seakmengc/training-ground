@@ -14,21 +14,36 @@ public class GameManager : MonoBehaviour
     public Sprite emptyHeart;
 
     public TextMeshProUGUI levelUi;
+    public TextMeshProUGUI velocityUi;
 
     public Image[] hearts;
 
     public GameObject brakeUi;
+    public Rigidbody carRigidbody;
+
 
     // Start is called before the first frame update
     void Start()
     {
         gameState = GameState.Running;
+
+        StartCoroutine(CalcVelocity());
     }
 
     // Update is called once per frame
     void Update()
     {
         levelUi.SetText("Level: " + level.ToString());
+    }
+
+    IEnumerator CalcVelocity()
+    {
+        while (Application.isPlaying)
+        {
+            yield return new WaitForFixedUpdate();
+            float moveSpeed = Mathf.RoundToInt(carRigidbody.velocity.magnitude * 3.6f);
+            velocityUi.SetText(moveSpeed.ToString() + " km/h");
+        }
     }
 
     public void SetBraking(bool isBraking)
