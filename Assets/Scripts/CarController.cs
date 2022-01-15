@@ -14,9 +14,9 @@ public class CarController : MonoBehaviour
 
 	public Transform rollTransform;
 
-	private float maxSteerAngle = 60;
-	private float motorForce = 300f;
-	private float brakeForce = 600f;
+	private float maxSteerAngle = 45;
+	private float motorForce = 400f;
+	private float brakeForce = 1000f;
 
 	private float motorAccelerationForce = 1f;
 	private bool isBraking = false;
@@ -48,15 +48,15 @@ public class CarController : MonoBehaviour
 		}
 
 		//Increase acceleration overtime
-		if (motorAccelerationForce < 50)
+		if (motorAccelerationForce < 5)
 		{
-			motorAccelerationForce += 5;
+			motorAccelerationForce += 0.5f;
 		}
 	}
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
-		if(other.gameObject.CompareTag("Ground"))
+		if (other.gameObject.CompareTag("Ground"))
         {
 			gameManager.ReduceOneLive();
 			Debug.Log(other.gameObject.tag);
@@ -65,7 +65,7 @@ public class CarController : MonoBehaviour
 
     private void Steer()
 	{
-		float steeringAngle = maxSteerAngle * horizontalInput;
+		float steeringAngle = maxSteerAngle * horizontalInput / motorAccelerationForce;
 		frontLeftWheelCollider.steerAngle = steeringAngle;
 		frontRightWheelCollider.steerAngle = steeringAngle;
 	}
@@ -111,8 +111,9 @@ public class CarController : MonoBehaviour
 			return;
         }
 
-		frontLeftWheelCollider.motorTorque = verticalInput * motorForce * motorAccelerationForce;
-		frontRightWheelCollider.motorTorque = verticalInput * motorForce * motorAccelerationForce;
+		float motorTorque = verticalInput * motorForce * motorAccelerationForce;
+
+		frontLeftWheelCollider.motorTorque = frontRightWheelCollider.motorTorque = motorTorque;
 	}
 
 }
