@@ -48,9 +48,9 @@ public class CarController : MonoBehaviour
 		}
 
 		//Increase acceleration overtime
-		if (motorAccelerationForce < 5)
+		if (motorAccelerationForce < 50)
 		{
-			motorAccelerationForce += 0.25f;
+			motorAccelerationForce += 5;
 		}
 	}
 
