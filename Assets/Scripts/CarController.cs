@@ -54,7 +54,16 @@ public class CarController : MonoBehaviour
 		}
 	}
 
-	private void Steer()
+    private void OnTriggerEnter(Collider other)
+    {
+		if(other.gameObject.CompareTag("Ground"))
+        {
+			gameManager.ReduceOneLive();
+			Debug.Log(other.gameObject.tag);
+        }
+    }
+
+    private void Steer()
 	{
 		float steeringAngle = maxSteerAngle * horizontalInput;
 		frontLeftWheelCollider.steerAngle = steeringAngle;
