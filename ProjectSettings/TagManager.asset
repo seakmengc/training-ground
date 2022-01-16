@@ -6,14 +6,16 @@ TagManager:
   tags:
   - Ground
   - Road
+  - Car
+  - Road Sign
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Car
   - Water
   - UI
-  - 
+  - Map Only
   - 
   - 
   - 
