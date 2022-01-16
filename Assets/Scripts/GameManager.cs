@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameState gameState;
 
-    public int level = 1;
     public int lives = 3;
 
     public Sprite emptyHeart;
@@ -21,19 +20,23 @@ public class GameManager : MonoBehaviour
     public GameObject brakeUi;
     public Rigidbody carRigidbody;
 
+    private TaskManager taskManager;
 
     // Start is called before the first frame update
     void Start()
     {
         gameState = GameState.Running;
+        taskManager = new TaskManager(levelUi);
 
         StartCoroutine(CalcVelocity());
     }
 
-    // Update is called once per frame
-    void Update()
+    /**
+     * If the car collided with Goal Indicator from wrong level, this will return false
+     */
+    public bool CollideWithGoalIndicator(GameObject gameObject, int taksNumber)
     {
-        levelUi.SetText("Level: " + level.ToString());
+        return taskManager.CollideWithGoalIndicator(gameObject, taksNumber);
     }
 
     IEnumerator CalcVelocity()
