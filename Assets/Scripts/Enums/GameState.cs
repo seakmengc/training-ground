@@ -1,1 +1,1 @@
-public enum GameState { Running, Paused, GameOver };
+public enum GameState { Running, Paused, Restoring, GameOver };

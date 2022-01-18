@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoalIndicatorCollider : MonoBehaviour
+public class GoalCheckpointCollider : MonoBehaviour
 {
     private GameManager gameManager;
 
     public int taskNumber = 0;
+    public float yRotation = 0;
 
     private void Start()
     {
@@ -17,7 +18,7 @@ public class GoalIndicatorCollider : MonoBehaviour
     {
         if(other.gameObject.CompareTag("Car"))
         {
-            bool collided = gameManager.CollideWithGoalIndicator(other.gameObject, taskNumber);
+            bool collided = gameManager.CollideWithGoalCheckpoint(other.gameObject, this);
 
             if(collided)
             {

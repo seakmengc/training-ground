@@ -14,7 +14,7 @@ public class CarController : MonoBehaviour
 
 	public Transform rollTransform;
 
-	private float maxSteerAngle = 45;
+	private float maxSteerAngle = 60;
 	private float motorForce = 400f;
 	private float brakeForce = 1000f;
 
@@ -30,6 +30,11 @@ public class CarController : MonoBehaviour
 
     private void FixedUpdate()
 	{
+		if (gameManager.isNotRunning())
+		{
+			return;
+		}
+
 		//Get input
 		horizontalInput = Input.GetAxis("Horizontal");
 		verticalInput = Input.GetAxis("Vertical");
@@ -115,5 +120,4 @@ public class CarController : MonoBehaviour
 
 		frontLeftWheelCollider.motorTorque = frontRightWheelCollider.motorTorque = motorTorque;
 	}
-
 }

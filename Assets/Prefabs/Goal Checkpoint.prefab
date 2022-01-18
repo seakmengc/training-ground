@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8726353564896697817}
   - component: {fileID: 8726353564734951464}
   m_Layer: 0
-  m_Name: Goal Indicator
+  m_Name: Goal Checkpoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,3 +109,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 396909934f04a554a9b4e2ac946a316e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  taskNumber: 1
