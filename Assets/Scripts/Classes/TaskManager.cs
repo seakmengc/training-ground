@@ -9,7 +9,7 @@ public class TaskManager
     private int level = 1;
 
     private TextMeshProUGUI levelUi;
-    private Vector3 lastCheckpoint = new Vector3(104, 1, 391);
+    private Vector3 lastCheckpoint = new Vector3(97, 0.2f, 391);
     private float lastYRotation = 180f;
 
     public TaskManager(TextMeshProUGUI levelUi)
@@ -20,6 +20,9 @@ public class TaskManager
     public void SetToLastCheckpoint(Transform transform)
     {
         transform.position = lastCheckpoint;
+        Debug.Log("Last Y " + lastYRotation);
+        transform.rotation = Quaternion.Euler(0, lastYRotation, 0);
+        Debug.Log(transform.rotation);
     }
 
     /**
@@ -34,7 +37,7 @@ public class TaskManager
 
         level++;
         lastCheckpoint = collidedWith.transform.position;
-        lastCheckpoint.y = 1;
+        lastCheckpoint.y = 0.2f;
         lastYRotation = goalCheckpointCollider.yRotation;
 
         levelUi.SetText("Level: " + level.ToString());

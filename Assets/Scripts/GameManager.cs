@@ -83,17 +83,9 @@ public class GameManager : MonoBehaviour
         taskManager.SetToLastCheckpoint(carTransform);
         gameState = GameState.Restoring;
         carRigidbody.velocity = Vector3.zero;
-        carTransform.rotation = Quaternion.identity;
 
         lives--;
-        //Set heart to empty
-        int i = 0;
-        while(i < 5)
-        {
-            hearts[lives].sprite = i % 2 == 0 ? emptyHeart : fullHeart;
-            i++;
-            await Task.Delay(TimeSpan.FromSeconds(0.3f));
-        }
+        await UpdateHeartsUI();
 
         if (lives == 0)
         {
@@ -103,5 +95,17 @@ public class GameManager : MonoBehaviour
         }
 
         gameState = GameState.Running;
+    }
+
+    private async Task UpdateHeartsUI()
+    {
+        //Set heart to empty
+        int i = 0;
+        while (i < 5)
+        {
+            hearts[lives].sprite = i % 2 == 0 ? emptyHeart : fullHeart;
+            i++;
+            await Task.Delay(TimeSpan.FromSeconds(0.3f));
+        }
     }
 }

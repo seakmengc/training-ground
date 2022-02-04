@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
+using Valve.VR;
 
 public class CarController : MonoBehaviour
 {
@@ -20,13 +23,37 @@ public class CarController : MonoBehaviour
 
 	private float motorAccelerationForce = 1f;
 	private bool isBraking = false;
+	private bool normalInput = true;
 
 	private GameManager gameManager;
 
-    private void Start()
+	public SteamVR_Action_Boolean grabPinch;
+	SteamVR_Input_Sources rightHand = SteamVR_Input_Sources.RightHand;
+	SteamVR_Input_Sources leftHand = SteamVR_Input_Sources.LeftHand;
+
+
+	private void Start()
     {
 		gameManager = FindObjectOfType<GameManager>();
+		grabPinch.AddOnChangeListener(OnTiggerPressedOrReleased, rightHand);
+		grabPinch.AddOnChangeListener(OnTiggerPressedOrReleased, leftHand);
+	}
+
+	private void OnTiggerPressedOrReleased(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource, bool newState)
+	{
+		if(fromSource == SteamVR_Input_Sources.RightHand)
+        {
+			verticalInput = newState ? 1.0f : 0f;
+        }
+
+		if (fromSource == SteamVR_Input_Sources.LeftHand)
+		{
+			isBraking = newState;
+		}
+
+		Debug.Log(newState + fromSource.ToString());
     }
+
 
     private void FixedUpdate()
 	{
@@ -36,8 +63,14 @@ public class CarController : MonoBehaviour
 		}
 
 		//Get input
-		horizontalInput = Input.GetAxis("Horizontal");
-		verticalInput = Input.GetAxis("Vertical");
+		if(normalInput)
+        {
+			horizontalInput = Input.GetAxis("Horizontal");
+			verticalInput = Input.GetAxis("Vertical");
+		} else
+        {
+			horizontalInput = InputTracking.GetLocalRotation(XRNode.RightHand).y * -3.0f;
+		}
 
 		Steer();
 
@@ -57,6 +90,26 @@ public class CarController : MonoBehaviour
 		{
 			motorAccelerationForce += 0.5f;
 		}
+
+
+		var inputDevices = new List<UnityEngine.XR.InputDevice>();
+		UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right, inputDevices);
+		
+		foreach (var device in inputDevices)
+        {
+			device.TryGetFeatureValue(CommonUsages.primaryButton, out bool value);
+			if (!value)
+			{
+				return;
+			}
+
+			Debug.Log(string.Format("Device found with name '{0}' and role '{1}'", device.name, device.role.ToString()));
+
+
+			Debug.Log("Triggered: " + value);
+		} 
+		
+		//Debug.Log("Right Hand: " + InputTracking.GetLocalRotation(XRNode.RightHand));
 	}
 
     private void OnCollisionEnter(Collision other)
@@ -103,7 +156,11 @@ public class CarController : MonoBehaviour
 
 	private void HandleMotor()
     {
-		isBraking = Input.GetKey(KeyCode.Space);
+		if(normalInput)
+        {
+			isBraking = Input.GetKey(KeyCode.Space);
+		}
+
 		float currBrakeForce = isBraking ? brakeForce : 0f;
 
 		frontLeftWheelCollider.brakeTorque = currBrakeForce;
