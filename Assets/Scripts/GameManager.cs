@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI levelUi;
     public TextMeshProUGUI velocityUi;
+    public Button restartButton;
 
     public Image[] hearts;
 
@@ -89,12 +91,23 @@ public class GameManager : MonoBehaviour
 
         if (lives == 0)
         {
-            gameState = GameState.GameOver;
-            Debug.Log("Game Over.");
+            GameOver();
             return;
         }
 
         gameState = GameState.Running;
+    }
+
+    private void GameOver()
+    {
+        gameState = GameState.GameOver;
+        restartButton.gameObject.SetActive(true);
+        Debug.Log("Game Over.");
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private async Task UpdateHeartsUI()
