@@ -17,7 +17,7 @@ public class CarController : MonoBehaviour
 
 	public Transform rollTransform;
 
-	private float maxSteerAngle = 60;
+	private float maxSteerAngle = 120;
 	private float motorForce = 400f;
 	private float brakeForce = 1000f;
 
@@ -30,7 +30,6 @@ public class CarController : MonoBehaviour
 	public SteamVR_Action_Boolean grabPinch;
 	SteamVR_Input_Sources rightHand = SteamVR_Input_Sources.RightHand;
 	SteamVR_Input_Sources leftHand = SteamVR_Input_Sources.LeftHand;
-
 
 	private void Start()
     {
@@ -96,7 +95,7 @@ public class CarController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-		if (other.gameObject.CompareTag("Ground"))
+		if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Road Sign"))
         {
 			gameManager.ReduceOneLive();
 			Debug.Log(other.gameObject.tag);

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3077670912459739150}
   - component: {fileID: 2880973699886736404}
   - component: {fileID: 5250365465239697700}
+  - component: {fileID: 3567184408188692260}
   m_Layer: 0
   m_Name: LeftTurnSign
   m_TagString: Untagged
@@ -82,6 +83,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &3567184408188692260
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3822184047205805800}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.49999997
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0.000015258789, y: 0, z: 0}
 --- !u!1001 &8137911464416298411
 PrefabInstance:
   m_ObjectHideFlags: 0
