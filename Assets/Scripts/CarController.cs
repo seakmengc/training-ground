@@ -35,8 +35,10 @@ public class CarController : MonoBehaviour
 	private void Start()
     {
 		gameManager = FindObjectOfType<GameManager>();
+
 		grabPinch.AddOnChangeListener(OnTiggerPressedOrReleased, rightHand);
 		grabPinch.AddOnChangeListener(OnTiggerPressedOrReleased, leftHand);
+
 	}
 
 	private void OnTiggerPressedOrReleased(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource, bool newState)
@@ -90,26 +92,6 @@ public class CarController : MonoBehaviour
 		{
 			motorAccelerationForce += 0.5f;
 		}
-
-
-		var inputDevices = new List<UnityEngine.XR.InputDevice>();
-		UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right, inputDevices);
-		
-		foreach (var device in inputDevices)
-        {
-			device.TryGetFeatureValue(CommonUsages.primaryButton, out bool value);
-			if (!value)
-			{
-				return;
-			}
-
-			Debug.Log(string.Format("Device found with name '{0}' and role '{1}'", device.name, device.role.ToString()));
-
-
-			Debug.Log("Triggered: " + value);
-		} 
-		
-		//Debug.Log("Right Hand: " + InputTracking.GetLocalRotation(XRNode.RightHand));
 	}
 
     private void OnCollisionEnter(Collision other)

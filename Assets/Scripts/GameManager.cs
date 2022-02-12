@@ -29,11 +29,14 @@ public class GameManager : MonoBehaviour
     private Transform carTransform;
     private TaskManager taskManager;
 
+    private AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
         gameState = GameState.Running;
         taskManager = new TaskManager(levelUi);
+        audioSource = GetComponent<AudioSource>();
 
         carRigidbody = car.GetComponent<Rigidbody>();
         carTransform = car.GetComponent<Transform>();
@@ -56,6 +59,8 @@ public class GameManager : MonoBehaviour
             yield return new WaitForFixedUpdate();
             float moveSpeed = Mathf.RoundToInt(carRigidbody.velocity.magnitude * 3.6f);
             velocityUi.SetText(moveSpeed.ToString() + " km/h");
+
+            audioSource.pitch = Math.Max(0.1f, moveSpeed / 150.0f);
         }
     }
 
