@@ -16,8 +16,9 @@ public class CarController : MonoBehaviour
 	public Transform backLeftTransform, backRightTransform;
 
 	public Transform rollTransform;
+	public Transform leftUpperHand, rightUpperHand;
 
-	private float maxSteerAngle = 120;
+	private float maxSteerAngle = 60;
 	private float motorForce = 400f;
 	private float brakeForce = 1000f;
 
@@ -35,8 +36,11 @@ public class CarController : MonoBehaviour
     {
 		gameManager = FindObjectOfType<GameManager>();
 
-		grabPinch.AddOnChangeListener(OnTiggerPressedOrReleased, rightHand);
-		grabPinch.AddOnChangeListener(OnTiggerPressedOrReleased, leftHand);
+		if (!normalInput)
+        {
+			grabPinch.AddOnChangeListener(OnTiggerPressedOrReleased, rightHand);
+			grabPinch.AddOnChangeListener(OnTiggerPressedOrReleased, leftHand);
+		}
 
 	}
 
@@ -73,6 +77,8 @@ public class CarController : MonoBehaviour
 			horizontalInput = InputTracking.GetLocalRotation(XRNode.RightHand).y * -3.0f;
 		}
 
+		Debug.Log(verticalInput);
+
 		Steer();
 
 		HandleMotor();
@@ -85,12 +91,15 @@ public class CarController : MonoBehaviour
 		{
 			motorAccelerationForce = 1f;
 		}
-
-		//Increase acceleration overtime
-		if (motorAccelerationForce < 5)
-		{
-			motorAccelerationForce += 0.5f;
+		else
+        {
+			//Increase acceleration overtime
+			if (motorAccelerationForce < 5)
+			{
+				motorAccelerationForce += 0.5f;
+			}
 		}
+
 	}
 
     private void OnCollisionEnter(Collision other)
@@ -105,35 +114,58 @@ public class CarController : MonoBehaviour
     private void Steer()
 	{
 		float steeringAngle = maxSteerAngle * horizontalInput / motorAccelerationForce;
+		//Debug.Log(maxSteerAngle + " " + horizontalInput + " " + motorAccelerationForce);
 		frontLeftWheelCollider.steerAngle = steeringAngle;
 		frontRightWheelCollider.steerAngle = steeringAngle;
 	}
 
 	private void UpdateWheelPoses()
 	{
-		UpdateWheelPose(frontLeftWheelCollider, frontLeftTransform);
+		//UpdateWheelPose(frontLeftWheelCollider, frontLeftTransform);
+		UpdateWheelPose(frontLeftWheelCollider, frontLeftTransform, 0f);
 		UpdateWheelPose(frontRightWheelCollider, frontRightTransform, 0f);
-		UpdateWheelPose(backLeftWheelCollider, backLeftTransform);
+		//UpdateWheelPose(backLeftWheelCollider, backLeftTransform);
+		UpdateWheelPose(backLeftWheelCollider, backLeftTransform, 0f);
 		UpdateWheelPose(backRightWheelCollider, backRightTransform, 0f);
     }
 
 	private void UpdateRollPose(WheelCollider collider)
     {
-		rollTransform.localRotation = new Quaternion(0, 0, collider.steerAngle / -maxSteerAngle, 1);
-    }
+		rollTransform.localRotation = new Quaternion(
+			rollTransform.localRotation.x,
+			rollTransform.localRotation.y,
+			collider.steerAngle / -maxSteerAngle,
+			rollTransform.localRotation.w
+		);
+
+		var changesInZ = rollTransform.localRotation.z * 120f;
+
+        leftUpperHand.localRotation = Quaternion.Euler(
+			-1.277f - (changesInZ / 3f),
+			-48.368f - changesInZ,
+			58.172f - changesInZ
+		);
+
+		rightUpperHand.localRotation = Quaternion.Euler(
+			0.882f - (changesInZ / 3f),
+			35.766f - (changesInZ * 2),
+			55.864f + changesInZ
+		);
+	}
 
 	//Update car wheel position and rotation based on collider
 	private void UpdateWheelPose(WheelCollider collider, Transform transform, float yRotation = 180f)
 	{
 		Vector3 pos;
-		Quaternion quat;
+        Quaternion quat;
 
-		collider.GetWorldPose(out pos, out quat);
-		quat *= Quaternion.Euler(0, yRotation, 0);
+        collider.GetWorldPose(out pos, out quat);
+		//Debug.Log("Quat: " + quat);
+        quat *= Quaternion.Euler(0, yRotation, 0);
 
-		transform.position = pos;
-		transform.rotation = quat;
-	}
+        transform.position = pos;
+        transform.rotation = quat;
+    }
 
 	private void HandleMotor()
     {
@@ -143,6 +175,11 @@ public class CarController : MonoBehaviour
 		}
 
 		float currBrakeForce = isBraking ? brakeForce : 0f;
+
+		if(Input.GetAxis("Vertical") <= 0)
+        {
+			currBrakeForce = brakeForce / 2f;
+        }
 
 		frontLeftWheelCollider.brakeTorque = currBrakeForce;
 		frontRightWheelCollider.brakeTorque = currBrakeForce;
