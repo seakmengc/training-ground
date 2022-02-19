@@ -32,9 +32,17 @@ public class CarController : MonoBehaviour
 	SteamVR_Input_Sources rightHand = SteamVR_Input_Sources.RightHand;
 	SteamVR_Input_Sources leftHand = SteamVR_Input_Sources.LeftHand;
 
+	Renderer cameraScreenRenderer;
+	Material frontCamera;
+	Material backCamera;
+
 	private void Start()
     {
 		gameManager = FindObjectOfType<GameManager>();
+
+		cameraScreenRenderer = GameObject.Find("CameraFrontScreen").GetComponent<Renderer>();
+		frontCamera = Array.Find(cameraScreenRenderer.materials, material => material.name.Contains("CameraFront"));
+		backCamera = Array.Find(cameraScreenRenderer.materials, material => material.name.Contains("CameraBack"));
 
 		if (!normalInput)
         {
@@ -78,6 +86,9 @@ public class CarController : MonoBehaviour
 		}
 
 		Debug.Log(verticalInput);
+
+		// Update Camera Screen to Front/Back
+		cameraScreenRenderer.material = verticalInput < 0 ? backCamera : frontCamera;
 
 		Steer();
 
