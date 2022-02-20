@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using Valve.VR;
+using System.Threading.Tasks;
 
 public class CarController : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class CarController : MonoBehaviour
 
 	private float maxSteerAngle = 60;
 	private float motorForce = 400f;
-	private float brakeForce = 1000f;
+	private float brakeForce = 4000f;
 
 	private float motorAccelerationForce = 1f;
 	private bool isBraking = false;
@@ -36,9 +37,15 @@ public class CarController : MonoBehaviour
 	Material frontCamera;
 	Material backCamera;
 
+	public Vector3 com;
+	private Rigidbody rb;
+
 	private void Start()
     {
 		gameManager = FindObjectOfType<GameManager>();
+
+		rb = GetComponent<Rigidbody>();
+		rb.centerOfMass = com;
 
 		cameraScreenRenderer = GameObject.Find("CameraFrontScreen").GetComponent<Renderer>();
 		frontCamera = Array.Find(cameraScreenRenderer.materials, material => material.name.Contains("CameraFront"));
@@ -88,7 +95,7 @@ public class CarController : MonoBehaviour
 		Debug.Log(verticalInput);
 
 		// Update Camera Screen to Front/Back
-		cameraScreenRenderer.material = verticalInput < 0 ? backCamera : frontCamera;
+		cameraScreenRenderer.material = verticalInput < 0 ? backCamera : frontCamera;    
 
 		Steer();
 
@@ -98,7 +105,8 @@ public class CarController : MonoBehaviour
 
 		UpdateRollPose(frontLeftWheelCollider);
 
-		if (isBraking)
+		// avoid car going too fast when reversing
+		if (isBraking || verticalInput < 0)
 		{
 			motorAccelerationForce = 1f;
 		}
@@ -186,24 +194,12 @@ public class CarController : MonoBehaviour
 		}
 
 		float currBrakeForce = isBraking ? brakeForce : 0f;
+		backLeftWheelCollider.brakeTorque = backRightWheelCollider.brakeTorque = currBrakeForce;
 
-		if(Input.GetAxis("Vertical") <= 0)
-        {
-			currBrakeForce = brakeForce / 2f;
-        }
-
-		frontLeftWheelCollider.brakeTorque = currBrakeForce;
-		frontRightWheelCollider.brakeTorque = currBrakeForce;
 		//Notify game manager to update brake UI
 		gameManager.SetBraking(isBraking);
 
-		if(isBraking)
-        {
-			return;
-        }
-
 		float motorTorque = verticalInput * motorForce * motorAccelerationForce;
-
-		frontLeftWheelCollider.motorTorque = frontRightWheelCollider.motorTorque = motorTorque;
+		backLeftWheelCollider.motorTorque = backRightWheelCollider.motorTorque = motorTorque;
 	}
 }
