@@ -92,8 +92,6 @@ public class CarController : MonoBehaviour
 			horizontalInput = InputTracking.GetLocalRotation(XRNode.RightHand).y * -3.0f;
 		}
 
-		Debug.Log(verticalInput);
-
 		// Update Camera Screen to Front/Back
 		cameraScreenRenderer.material = verticalInput < 0 ? backCamera : frontCamera;    
 

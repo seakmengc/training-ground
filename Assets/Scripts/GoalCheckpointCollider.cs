@@ -16,14 +16,16 @@ public class GoalCheckpointCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Car"))
+        if(!other.gameObject.CompareTag("Car"))
         {
-            bool collided = gameManager.CollideWithGoalCheckpoint(other.gameObject, this);
+            return;
+        }
 
-            if(collided)
-            {
-                Destroy(gameObject, 1);
-            }
+        bool collided = gameManager.CollideWithGoalCheckpoint(other.gameObject, this);
+
+        if (collided)
+        {
+            Destroy(gameObject, 1);
         }
     }
 }
