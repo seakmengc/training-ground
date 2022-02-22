@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -31,7 +30,6 @@ public class GameManager : MonoBehaviour
 
     private AudioSource audioSource;
 
-    public ParticleSystem explosionParticle;
     public AudioClip crashSound;
     public GameObject winningUi;
     public GameObject gameplayUi;
@@ -125,9 +123,6 @@ public class GameManager : MonoBehaviour
 
         gameplayUi.SetActive(false);
         winningUi.SetActive(true);
-        explosionParticle.Play();
-
-        //Vector3(-0.388000488, 1.21000004, -0.064000003)
 
         Debug.Log("Won.");
     }
