@@ -26,6 +26,12 @@ public class GoalCheckpointCollider : MonoBehaviour
         if (collided)
         {
             Destroy(gameObject, 1);
+
+            if (taskNumber == 4)
+            {
+                gameManager.Won();
+            }
         }
+
     }
 }

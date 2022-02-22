@@ -79,6 +79,8 @@ public class CarController : MonoBehaviour
 	{
 		if (gameManager.isNotRunning())
 		{
+			//stop accelaration
+			motorAccelerationForce = 1f;
 			return;
 		}
 

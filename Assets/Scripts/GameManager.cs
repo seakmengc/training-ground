@@ -31,6 +31,13 @@ public class GameManager : MonoBehaviour
 
     private AudioSource audioSource;
 
+    public ParticleSystem explosionParticle;
+    public AudioClip crashSound;
+    public GameObject winningUi;
+    public GameObject gameplayUi;
+
+    public Transform mainCamera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -87,6 +94,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        audioSource.PlayOneShot(crashSound);
         taskManager.SetToLastCheckpoint(carTransform);
         gameState = GameState.Restoring;
         carRigidbody.velocity = Vector3.zero;
@@ -108,6 +116,20 @@ public class GameManager : MonoBehaviour
         gameState = GameState.GameOver;
         restartButton.gameObject.SetActive(true);
         Debug.Log("Game Over.");
+    }
+
+    public void Won()
+    {
+        gameState = GameState.Won;
+        explosionParticle.Play();
+
+        gameplayUi.SetActive(false);
+        winningUi.SetActive(true);
+        explosionParticle.Play();
+
+        //Vector3(-0.388000488, 1.21000004, -0.064000003)
+
+        Debug.Log("Won.");
     }
 
     public void Restart()
