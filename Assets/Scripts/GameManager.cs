@@ -119,7 +119,6 @@ public class GameManager : MonoBehaviour
     public void Won()
     {
         gameState = GameState.Won;
-        explosionParticle.Play();
 
         gameplayUi.SetActive(false);
         winningUi.SetActive(true);

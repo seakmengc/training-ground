@@ -31,7 +31,6 @@ public class GoalCheckpointCollider : MonoBehaviour
             {
                 gameManager.Won();
             }
-        }
-
+        }   
     }
 }
